@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva Confirmada</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }
+        .card { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        h1 { color: #27ae60; }
+        p { font-size: 16px; margin: 10px 0; }
+        .aviso { background: #eaf6ff; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 14px; text-align: left; }
+        a { display: inline-block; margin-top: 20px; color: #2c3e50; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>✅ Reserva realizada com sucesso!</h1>
+        <p><strong>Número(s):</strong> {{ dados.numeros|join(', ') }}</p>
+        <p><strong>Nome:</strong> {{ dados.nome }}</p>
+        <p><strong>WhatsApp:</strong> {{ dados.whatsapp }}</p>
+
+        <div class="aviso">
+            Sua reserva está confirmada como <strong>pendente de pagamento</strong>.
+            Em breve você receberá as instruções de pagamento pelo WhatsApp informado.
+        </div>
+
+        <a href="/">Voltar para a rifa</a>
+    </div>
+</body>
+</html>

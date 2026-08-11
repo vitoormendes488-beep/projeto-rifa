@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa da Ovelha</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .info { margin-bottom: 15px; font-size: 18px; }
+        .resumo { margin-bottom: 20px; font-size: 15px; color: #555; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; max-width: 600px; margin: 0 auto; }
+        .numero { padding: 14px 0; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; border: 3px solid transparent; user-select: none; }
+        .disponivel { background-color: #2ecc71; }
+        .reservado, .pago { background-color: #e74c3c; cursor: not-allowed; opacity: 0.7; }
+        .selecionado { background-color: #3498db; border: 3px solid #2c3e50; }
+        .rodape { margin-top: 25px; }
+        #btnContinuar { padding: 14px 30px; font-size: 18px; font-weight: bold; background-color: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        #btnContinuar:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #contador { margin-bottom: 15px; font-size: 16px; }
+        .completa { background: #f1c40f; padding: 15px; border-radius: 10px; max-width: 500px; margin: 0 auto 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Rifa da Ovelha 🐑</h1>
+
+    <div class="info">
+        <p>Prêmio: 1 Ovelha</p>
+        <p>Valor: R$ 10,00</p>
+        <p>Quantidade: 100 números</p>
+    </div>
+
+    <div class="resumo">
+        Disponíveis: {{ stats.disponivel }} | Reservados: {{ stats.reservado }} | Pagos: {{ stats.pago }} | Arrecadado: R$ {{ stats.arrecadado }}
+    </div>
+
+    {% if stats.completa %}
+        <div class="completa">
+            🎉 RIFA COMPLETA! O sorteio será realizado conforme as regras da rifa, com base no resultado oficial da Loteria Federal.
+        </div>
+    {% endif %}
+
+    <div class="grid" id="grid">
+        {% for item in numeros %}
+            <div class="numero {{ item.status }}" data-numero="{{ item.numero }}" data-status="{{ item.status }}">
+                {{ "%02d"|format(item.numero) }}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if not stats.completa %}
+    <div class="rodape">
+        <p id="contador">Nenhum número selecionado</p>
+        <button id="btnContinuar" disabled>Continuar</button>
+    </div>
+    {% endif %}
+
+    <script>
+        let selecionados = [];
+        const caixas = document.querySelectorAll(".numero");
+        const contador = document.getElementById("contador");
+        const btnContinuar = document.getElementById("btnContinuar");
+
+        caixas.forEach(function (caixa) {
+            caixa.addEventListener("click", function () {
+                if (caixa.dataset.status !== "disponivel") return;
+
+                const numero = parseInt(caixa.dataset.numero);
+                if (selecionados.includes(numero)) {
+                    selecionados = selecionados.filter(n => n !== numero);
+                    caixa.classList.remove("selecionado");
+                } else {
+                    selecionados.push(numero);
+                    caixa.classList.add("selecionado");
+                }
+                atualizarRodape();
+            });
+        });
+
+        function atualizarRodape() {
+            if (!contador) return;
+            if (selecionados.length === 0) {
+                contador.textContent = "Nenhum número selecionado";
+                btnContinuar.disabled = true;
+            } else {
+                contador.textContent = "Selecionado(s): " + selecionados.join(", ");
+                btnContinuar.disabled = false;
+            }
+        }
+
+        if (btnContinuar) {
+            btnContinuar.addEventListener("click", function () {
+                window.location.href = "/formulario?numeros=" + selecionados.join(",");
+            });
+        }
+    </script>
+</body>
+</html>

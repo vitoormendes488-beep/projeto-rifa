@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa da Ovelha - Formulário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .card {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            text-align: left;
+        }
+
+        .numeros-escolhidos {
+            background-color: #eaf6ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .erro {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #btnConfirmar {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rifa da Ovelha</h1>
+
+    <div class="card">
+        <div class="numeros-escolhidos">
+            Números escolhidos: {{ numeros_str }}
+        </div>
+
+        <form id="formReserva">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo">
+            <div class="erro" id="erroNome">Por favor, informe seu nome completo.</div>
+
+            <label for="whatsapp">Número de WhatsApp</label>
+            <input type="text" id="whatsapp" name="whatsapp" placeholder="(XX) XXXXX-XXXX">
+            <div class="erro" id="erroWhatsapp">Por favor, informe um WhatsApp válido.</div>
+
+            <button type="submit" id="btnConfirmar">Confirmar reserva</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("formReserva");
+        const numerosEscolhidos = "{{ numeros_str }}";
+
+        form.addEventListener("submit", function (evento) {
+            evento.preventDefault(); // impede o envio "padrão" do formulário
+
+            let valido = true;
+
+            const nome = document.getElementById("nome").value.trim();
+            const whatsapp = document.getElementById("whatsapp").value.trim();
+
+            // validação do nome: precisa ter pelo menos um espaço (nome + sobrenome)
+            if (nome.length < 3) {
+                document.getElementById("erroNome").style.display = "block";
+                valido = false;
+            } else {
+                document.getElementById("erroNome").style.display = "none";
+            }
+
+            // validação simples do whatsapp: precisa ter pelo menos 8 dígitos numéricos
+            const apenasNumeros = whatsapp.replace(/\D/g, "");
+            if (apenasNumeros.length < 8) {
+                document.getElementById("erroWhatsapp").style.display = "block";
+                valido = false;
+            } else {
+                document.getElementById("erroWhatsapp").style.display = "none";
+            }
+
+            // validação: precisa ter pelo menos 1 número escolhido
+            if (!numerosEscolhidos) {
+                alert("Nenhum número foi escolhido. Volte e selecione ao menos um número.");
+                valido = false;
+            }
+
+            if (valido) {
+                // por enquanto só mostramos um alerta
+                // na Etapa 5/6 vamos salvar isso de verdade no banco de dados
+                alert(
+                    "Reserva confirmada (teste)!\n\n" +
+                    "Nome: " + nome + "\n" +
+                    "WhatsApp: " + whatsapp + "\n" +
+                    "Números: " + numerosEscolhidos
+                );
+            }
+        });
+    </script>
+</body>
+</html>
